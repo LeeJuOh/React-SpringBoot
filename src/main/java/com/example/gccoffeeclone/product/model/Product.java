@@ -1,5 +1,8 @@
 package com.example.gccoffeeclone.product.model;
 
+import static com.example.gccoffeeclone.utils.MapperUtils.getModelMapper;
+
+import com.example.gccoffeeclone.product.controller.ProductDto;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -31,6 +34,10 @@ public class Product {
         this.description = description;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public ProductDto toDto() {
+        return getModelMapper().map(this, ProductDto.class);
     }
 
     public UUID getProductId() {

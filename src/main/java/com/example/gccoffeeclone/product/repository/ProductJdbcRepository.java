@@ -2,7 +2,6 @@ package com.example.gccoffeeclone.product.repository;
 
 import static com.example.gccoffeeclone.utils.UuidUtils.*;
 
-import com.example.gccoffeeclone.exception.ObjectNotExistException;
 import com.example.gccoffeeclone.product.model.Category;
 import com.example.gccoffeeclone.product.model.Product;
 import java.util.*;
@@ -12,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 
-// TODO UPDATE or INSERT EXCEPTION
 @Repository
 public class ProductJdbcRepository implements ProductRepository {
 
@@ -51,30 +49,22 @@ public class ProductJdbcRepository implements ProductRepository {
     }
 
     @Override
-    public Product insert(Product product) {
-        var update = jdbcTemplate.update(
+    public void insert(Product product) {
+        jdbcTemplate.update(
             "INSERT INTO products(product_id, product_name, category, price, description, created_at, updated_at)"
                 +
                 " VALUES (UUID_TO_BIN(:productId), :productName, :category, :price, :description, :createdAt, :updatedAt)",
             toParamMap(product));
-        if (update != 1) {
-            throw new ObjectNotExistException("Noting was inserted");
-        }
-        return product;
     }
 
     @Override
-    public Product update(Product product) {
-        var update = jdbcTemplate.update(
+    public void update(Product product) {
+        jdbcTemplate.update(
             "UPDATE products SET product_name = :productName, category = :category, price = :price, description = :description, created_at = :createdAt, updated_at = :updatedAt"
                 +
                 " WHERE product_id = UUID_TO_BIN(:productId)",
             toParamMap(product)
         );
-        if (update != 1) {
-            throw new ObjectNotExistException("Nothing was updated");
-        }
-        return product;
     }
 
     @Override
