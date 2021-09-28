@@ -4,12 +4,18 @@ import com.example.gccoffeeclone.product.model.Category;
 import com.example.gccoffeeclone.product.model.Product;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class ProductDto {
 
     private UUID productId;
+    @NotBlank
     private String productName;
+    @NotNull
     private Category category;
+    @Positive(message = "상품 가격은 0원 이상이어야 합니다")
     private long price;
     private String description;
     private LocalDateTime createdAt;

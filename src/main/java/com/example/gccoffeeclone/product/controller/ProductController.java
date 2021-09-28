@@ -1,6 +1,7 @@
 package com.example.gccoffeeclone.product.controller;
 
 import com.example.gccoffeeclone.product.service.ProductService;
+import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public String newProduct(ProductDto productDto) {
+    public String newProduct(@Valid ProductDto productDto) {
         productService.createProduct(productDto);
         return "redirect:/products";
     }
