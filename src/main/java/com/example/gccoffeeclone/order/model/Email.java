@@ -2,9 +2,6 @@ package com.example.gccoffeeclone.order.model;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
 
 public class Email {

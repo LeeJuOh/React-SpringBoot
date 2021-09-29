@@ -1,7 +1,5 @@
 package com.example.gccoffeeclone.order.controller;
 
-import static com.example.gccoffeeclone.utils.MapperUtils.getModelMapper;
-
 import com.example.gccoffeeclone.order.model.Email;
 import com.example.gccoffeeclone.order.model.Order;
 import com.example.gccoffeeclone.order.model.OrderItem;
@@ -9,35 +7,41 @@ import com.example.gccoffeeclone.order.model.OrderStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class OrderDto {
+
     private UUID orderId;
     @NotNull
-    private Email email;
+    private String email;
     @NotBlank
     private String address;
     @NotBlank
     private String postcode;
     @Size(min = 1)
-    private List<OrderItem> orderItems;
+    private List<@Valid OrderItemDto> orderItems;
     private OrderStatus orderStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static OrderDto from(Order order) {
-        return getModelMapper().map(order, OrderDto.class);
-    }
-
     public Order toEntity() {
         return new Order(
             UUID.randomUUID(),
-            email,
+            new Email(email),
             address,
             postcode,
-            orderItems,
+            orderItems.stream()
+                .map(orderItemDto ->
+                    new OrderItem(
+                        orderItemDto.getProductId(),
+                        orderItemDto.getCategory(),
+                        orderItemDto.getPrice(),
+                        orderItemDto.getQuantity()))
+                .collect(Collectors.toList()),
             OrderStatus.ACCEPTED,
             LocalDateTime.now(),
             LocalDateTime.now()
@@ -48,7 +52,7 @@ public class OrderDto {
         return orderId;
     }
 
-    public Email getEmail() {
+    public String getEmail() {
         return email;
     }
 
@@ -60,7 +64,7 @@ public class OrderDto {
         return postcode;
     }
 
-    public List<OrderItem> getOrderItems() {
+    public List<OrderItemDto> getOrderItems() {
         return orderItems;
     }
 
@@ -80,7 +84,7 @@ public class OrderDto {
         this.orderId = orderId;
     }
 
-    public void setEmail(Email email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -92,7 +96,8 @@ public class OrderDto {
         this.postcode = postcode;
     }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
+    public void setOrderItems(
+        List<OrderItemDto> orderItems) {
         this.orderItems = orderItems;
     }
 

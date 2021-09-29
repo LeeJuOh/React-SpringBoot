@@ -2,11 +2,17 @@ package com.example.gccoffeeclone.order.controller;
 
 import com.example.gccoffeeclone.product.model.Category;
 import java.util.UUID;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class OrderItemDto {
+    @NotNull
     private UUID productId;
+    @NotNull
     private Category category;
+    @Positive
     private long price;
+    @Positive
     private int quantity;
 
     public UUID getProductId() {

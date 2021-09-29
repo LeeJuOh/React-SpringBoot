@@ -7,7 +7,6 @@ import com.example.gccoffeeclone.product.controller.ProductDto;
 import com.example.gccoffeeclone.product.model.Category;
 import com.example.gccoffeeclone.product.repository.ProductRepository;
 import java.util.List;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
