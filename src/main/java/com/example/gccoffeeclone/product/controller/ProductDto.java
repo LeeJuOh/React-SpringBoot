@@ -1,5 +1,7 @@
 package com.example.gccoffeeclone.product.controller;
 
+import static com.example.gccoffeeclone.utils.MapperUtils.getModelMapper;
+
 import com.example.gccoffeeclone.product.model.Category;
 import com.example.gccoffeeclone.product.model.Product;
 import java.time.LocalDateTime;
@@ -20,6 +22,10 @@ public class ProductDto {
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public static ProductDto from(Product product) {
+        return getModelMapper().map(product, ProductDto.class);
+    }
 
     public Product toEntity() {
         return (description == null) ?

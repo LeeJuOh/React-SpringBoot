@@ -44,7 +44,7 @@ public class DefaultProductService implements ProductService {
         var retrievedProduct = productRepository.findById(product.getProductId())
             .orElseThrow(() -> new EmptyResultDataAccessException(
                 "not found voucherId : " + product.getProductId(), 1));
-        return retrievedProduct.toDto();
+        return ProductDto.from(retrievedProduct);
     }
 
 }

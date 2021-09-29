@@ -5,9 +5,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class UuidUtils {
+public class JDBCUtils {
 
-    private UuidUtils() {
+    private JDBCUtils() {
         throw new IllegalStateException("Utility class");
     }
 

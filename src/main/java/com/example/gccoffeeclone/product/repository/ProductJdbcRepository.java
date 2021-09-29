@@ -1,6 +1,6 @@
 package com.example.gccoffeeclone.product.repository;
 
-import static com.example.gccoffeeclone.utils.UuidUtils.*;
+import static com.example.gccoffeeclone.utils.JDBCUtils.*;
 
 import com.example.gccoffeeclone.product.model.Category;
 import com.example.gccoffeeclone.product.model.Product;
