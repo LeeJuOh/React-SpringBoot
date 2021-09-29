@@ -10,7 +10,7 @@ public class Order {
     private final Email email;
     private String address;
     private String postcode;
-    private final List<OrderItem> orderItems;
+    private List<OrderItem> orderItems;
     private OrderStatus orderStatus;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -23,6 +23,17 @@ public class Order {
         this.address = address;
         this.postcode = postcode;
         this.orderItems = orderItems;
+        this.orderStatus = orderStatus;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Order(UUID orderId, Email email, String address, String postcode,
+        OrderStatus orderStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.orderId = orderId;
+        this.email = email;
+        this.address = address;
+        this.postcode = postcode;
         this.orderStatus = orderStatus;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -77,5 +88,19 @@ public class Order {
 
     private void setUpdatedAt() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+            "orderId=" + orderId +
+            ", email=" + email +
+            ", address='" + address + '\'' +
+            ", postcode='" + postcode + '\'' +
+            ", orderItems=" + orderItems +
+            ", orderStatus=" + orderStatus +
+            ", createdAt=" + createdAt +
+            ", updatedAt=" + updatedAt +
+            '}';
     }
 }

@@ -94,13 +94,13 @@ class ProductJdbcRepositoryTest {
         assertThat(product.get(), samePropertyValuesAs(newProduct));
     }
 
-//    @Test
-//    @Order(6)
-//    @DisplayName("상품을 전체 삭제한다.")
-//    void testDeleteAll() {
-//        repository.deleteAll();
-//        var all = repository.findAll();
-//        assertThat(all.isEmpty(), is(true));
-//    }
+    @Test
+    @Order(6)
+    @DisplayName("상품을 전체 삭제한다.")
+    void testDeleteAll() {
+        repository.deleteAll();
+        var all = repository.findAll();
+        assertThat(all.isEmpty(), is(true));
+    }
 
 }
