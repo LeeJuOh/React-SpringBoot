@@ -20,9 +20,8 @@ public class DefaultOrderService implements OrderService {
 
     @Override
     @Transactional
-    public OrderDto createOrder(@Valid OrderDto orderDto) {
+    public void createOrder(@Valid OrderDto orderDto) {
         var order = orderDto.toEntity();
         orderRepository.insert(order);
-        return OrderDto.from(order);
     }
 }

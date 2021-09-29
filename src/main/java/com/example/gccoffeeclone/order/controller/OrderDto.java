@@ -9,12 +9,19 @@ import com.example.gccoffeeclone.order.model.OrderStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class OrderDto {
     private UUID orderId;
+    @NotNull
     private Email email;
+    @NotBlank
     private String address;
+    @NotBlank
     private String postcode;
+    @Size(min = 1)
     private List<OrderItem> orderItems;
     private OrderStatus orderStatus;
     private LocalDateTime createdAt;

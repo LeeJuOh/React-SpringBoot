@@ -2,7 +2,9 @@ package com.example.gccoffeeclone.product.service;
 
 import static com.example.gccoffeeclone.utils.MapperUtils.mapList;
 
+import com.example.gccoffeeclone.exception.BadRequestException;
 import com.example.gccoffeeclone.product.controller.ProductDto;
+import com.example.gccoffeeclone.product.model.Category;
 import com.example.gccoffeeclone.product.repository.ProductRepository;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -21,9 +23,9 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getProductsByCategory(ProductDto productDto) {
+    public List<ProductDto> getProductsByCategory(Category category) {
         return mapList(
-            productRepository.findByCategory(productDto.getCategory()),
+            productRepository.findByCategory(category),
             ProductDto.class
         );
     }
@@ -42,8 +44,8 @@ public class DefaultProductService implements ProductService {
         var product = productDto.toEntity();
         productRepository.insert(product);
         var retrievedProduct = productRepository.findById(product.getProductId())
-            .orElseThrow(() -> new EmptyResultDataAccessException(
-                "not found voucherId : " + product.getProductId(), 1));
+            .orElseThrow(() -> new BadRequestException(
+                "not found voucherId : " + product.getProductId()));
         return ProductDto.from(retrievedProduct);
     }
 

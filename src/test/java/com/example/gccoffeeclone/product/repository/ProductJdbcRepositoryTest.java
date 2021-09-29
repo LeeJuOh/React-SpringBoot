@@ -1,20 +1,13 @@
 package com.example.gccoffeeclone.product.repository;
 
-import static com.wix.mysql.EmbeddedMysql.anEmbeddedMysql;
-import static com.wix.mysql.config.MysqldConfig.aMysqldConfig;
-import static com.wix.mysql.distribution.Version.v8_0_11;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 
+import com.example.gccoffeeclone.BaseTestTemplate;
 import com.example.gccoffeeclone.product.model.Category;
 import com.example.gccoffeeclone.product.model.Product;
-import com.wix.mysql.EmbeddedMysql;
-import com.wix.mysql.ScriptResolver;
-import com.wix.mysql.config.Charset;
 import java.util.UUID;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -29,31 +22,10 @@ import org.springframework.test.context.ActiveProfiles;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ProductJdbcRepositoryTest {
-
-    static EmbeddedMysql embeddedMysql;
-
-    @BeforeAll
-    static void setup() {
-        var config = aMysqldConfig(v8_0_11)
-            .withCharset(Charset.UTF8)
-            .withPort(2215)
-            .withUser("test", "test1234!")
-            .withTimeZone("Asia/Seoul")
-            .build();
-
-        embeddedMysql = anEmbeddedMysql(config)
-            .addSchema("test-order_mgmt", ScriptResolver.classPathScript("schema.sql"))
-            .start();
-    }
-
-    @AfterAll
-    static void cleanup() {
-        embeddedMysql.stop();
-    }
+class ProductJdbcRepositoryTest extends BaseTestTemplate {
 
     @Autowired
-    ProductRepository repository;
+    ProductRepository productRepository;
 
     private final Product newProduct = new Product(UUID.randomUUID(), "new-product",
         Category.COFFEE_BEAN_PACKAGE, 1000L);
@@ -62,8 +34,8 @@ class ProductJdbcRepositoryTest {
     @Order(1)
     @DisplayName("상품을 추가할 수 있다.")
     void testInsert() {
-        repository.insert(newProduct);
-        var all = repository.findAll();
+        productRepository.insert(newProduct);
+        var all = productRepository.findAll();
         assertThat(all.isEmpty(), is(false));
     }
 
@@ -71,7 +43,7 @@ class ProductJdbcRepositoryTest {
     @Order(2)
     @DisplayName("상품을 이름으로 조회할 수 있다.")
     void testFindByName() {
-        var product = repository.findByName(newProduct.getProductName());
+        var product = productRepository.findByName(newProduct.getProductName());
         assertThat(product.isEmpty(), is(false));
     }
 
@@ -79,7 +51,7 @@ class ProductJdbcRepositoryTest {
     @Order(3)
     @DisplayName("상품을아이디로 조회할 수 있다.")
     void testFindById() {
-        var product = repository.findById(newProduct.getProductId());
+        var product = productRepository.findById(newProduct.getProductId());
         assertThat(product.isEmpty(), is(false));
     }
 
@@ -87,7 +59,7 @@ class ProductJdbcRepositoryTest {
     @Order(4)
     @DisplayName("상품들을 카테고리로 조회할 수 있다.")
     void testFindByCategory() {
-        var product = repository.findByCategory(Category.COFFEE_BEAN_PACKAGE);
+        var product = productRepository.findByCategory(Category.COFFEE_BEAN_PACKAGE);
         assertThat(product.isEmpty(), is(false));
     }
 
@@ -96,9 +68,9 @@ class ProductJdbcRepositoryTest {
     @DisplayName("상품을 수정할 수 있다.")
     void testUpdate() {
         newProduct.setProductName("updated-product");
-        repository.update(newProduct);
+        productRepository.update(newProduct);
 
-        var product = repository.findById(newProduct.getProductId());
+        var product = productRepository.findById(newProduct.getProductId());
         assertThat(product.isEmpty(), is(false));
         assertThat(product.get(), samePropertyValuesAs(newProduct));
     }
@@ -107,8 +79,8 @@ class ProductJdbcRepositoryTest {
     @Order(6)
     @DisplayName("상품을 전체 삭제한다.")
     void testDeleteAll() {
-        repository.deleteAll();
-        var all = repository.findAll();
+        productRepository.deleteAll();
+        var all = productRepository.findAll();
         assertThat(all.isEmpty(), is(true));
     }
 
