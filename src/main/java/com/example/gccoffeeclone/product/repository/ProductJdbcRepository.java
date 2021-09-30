@@ -95,8 +95,10 @@ public class ProductJdbcRepository implements ProductRepository {
     }
 
     @Override
-    public void deleteAll() {
-        jdbcTemplate.update("DELETE FROM products", Collections.emptyMap());
+    public void deleteById(UUID productId) {
+        jdbcTemplate.update(
+            "DELETE FROM products where product_id = UUID_TO_BIN(:productId)",
+            Collections.singletonMap("productId", productId.toString().getBytes()));
     }
 
     private Map<String, Object> toParamMap(Product product) {

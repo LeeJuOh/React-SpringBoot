@@ -7,6 +7,7 @@ import com.example.gccoffeeclone.product.controller.ProductDto;
 import com.example.gccoffeeclone.product.model.Category;
 import com.example.gccoffeeclone.product.repository.ProductRepository;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,14 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
+    public ProductDto getProduct(UUID productId) {
+        var product = productRepository.findById(productId)
+            .orElseThrow(() -> new BadRequestException(
+                "Can not found product(%s)".formatted(productId)));
+        return ProductDto.from(product);
+    }
+
+    @Override
     public List<ProductDto> getAllProducts() {
         return mapList(
             productRepository.findAll(),
@@ -44,8 +53,28 @@ public class DefaultProductService implements ProductService {
         productRepository.insert(product);
         var retrievedProduct = productRepository.findById(product.getProductId())
             .orElseThrow(() -> new BadRequestException(
-                "not found voucherId : " + product.getProductId()));
+                "Can not found product(%s)".formatted(product.getProductId())));
         return ProductDto.from(retrievedProduct);
+    }
+
+    @Override
+    @Transactional
+    public void updateProduct(UUID productId, ProductDto productDto) {
+        var product = productRepository
+            .findById(productId)
+            .orElseThrow(
+                () -> new BadRequestException("Can not found product(%s)".formatted(productId)));
+        product.setProductName(productDto.getProductName());
+        product.setCategory(productDto.getCategory());
+        product.setPrice(productDto.getPrice());
+        product.setDescription(productDto.getDescription());
+        productRepository.update(product);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(UUID productId) {
+        productRepository.deleteById(productId);
     }
 
 }

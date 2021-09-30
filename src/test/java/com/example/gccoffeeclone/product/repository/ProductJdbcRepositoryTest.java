@@ -96,9 +96,9 @@ class ProductJdbcRepositoryTest {
 
     @Test
     @Order(6)
-    @DisplayName("상품을 전체 삭제한다.")
+    @DisplayName("상품 아이디로 삭제할 수 있다.")
     void testDeleteAll() {
-        repository.deleteAll();
+        repository.deleteById(newProduct.getProductId());
         var all = repository.findAll();
         assertThat(all.isEmpty(), is(true));
     }

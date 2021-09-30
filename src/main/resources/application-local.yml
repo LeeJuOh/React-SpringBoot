@@ -1,3 +1,9 @@
+spring:
+  thymeleaf:
+    prefix: file:src/main/resources/templates/
+    suffix : .html
+    cache : false
+
 logging:
   level:
     root: debug
