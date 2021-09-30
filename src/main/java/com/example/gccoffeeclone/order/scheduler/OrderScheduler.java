@@ -21,7 +21,7 @@ public class OrderScheduler {
     }
 
     @Transactional
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 14 * * *", zone = "Asia/Seoul")
     public void changeOrderStatusToReadyForDelivery() {
         log.info("order status cron job start");
         var to = LocalDateTime.now()

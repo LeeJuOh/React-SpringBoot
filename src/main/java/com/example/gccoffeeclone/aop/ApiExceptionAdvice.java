@@ -1,8 +1,8 @@
 package com.example.gccoffeeclone.aop;
 
 import com.example.gccoffeeclone.exception.BadRequestException;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,12 +19,12 @@ public class ApiExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleApiBindException(MethodArgumentNotValidException e) {
-        String errorCodes = e.getBindingResult().getAllErrors()
+        String errorMessages = e.getBindingResult().getAllErrors()
             .stream()
-            .map(error -> Objects.requireNonNull(error.getCodes())[0])
+            .map(DefaultMessageSourceResolvable::getDefaultMessage)
             .collect(Collectors.joining(","));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse("error codes: " + errorCodes));
+            .body(new ErrorResponse("error: " + errorMessages));
     }
 }

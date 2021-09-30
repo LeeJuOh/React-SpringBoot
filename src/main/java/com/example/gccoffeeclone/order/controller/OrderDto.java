@@ -22,7 +22,7 @@ public class OrderDto {
     private String address;
     @NotBlank
     private String postcode;
-    @Size(min = 1)
+    @Size(min = 1, message = "주문 상품 수량은 1개 이상 이어야합니다.")
     private List<@Valid OrderItemDto> orderItems;
     private OrderStatus orderStatus;
     private LocalDateTime createdAt;

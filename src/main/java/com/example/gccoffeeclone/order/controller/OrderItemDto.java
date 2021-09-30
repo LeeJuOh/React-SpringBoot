@@ -10,9 +10,9 @@ public class OrderItemDto {
     private UUID productId;
     @NotNull
     private Category category;
-    @Positive
+    @Positive(message = "주문 금액은 0원보다 큰 금액이어야 합니다.")
     private long price;
-    @Positive
+    @Positive(message = "주문 수량은 0보다 큰 값이어야 합니다.")
     private int quantity;
 
     public UUID getProductId() {
