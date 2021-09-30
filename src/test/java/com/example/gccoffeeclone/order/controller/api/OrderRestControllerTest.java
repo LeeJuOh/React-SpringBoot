@@ -17,16 +17,8 @@ import com.wix.mysql.EmbeddedMysql;
 import com.wix.mysql.ScriptResolver;
 import com.wix.mysql.config.Charset;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
+import java.util.*;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class OrderRestControllerTest {
 
     static EmbeddedMysql embeddedMysql;
+    private static Product newProduct;
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,6 +57,15 @@ class OrderRestControllerTest {
         embeddedMysql = anEmbeddedMysql(config)
             .addSchema("test-gc_coffee", ScriptResolver.classPathScript("schema.sql"))
             .start();
+
+        var productId = UUID.randomUUID();
+        var productName = "과테말라";
+        var category = Category.COFFEE_BEAN_PACKAGE;
+        var price = 15000L;
+        var description = "프리미엄 원두입니다.";
+
+        newProduct =  new Product(productId, productName, category, price, description,
+            LocalDateTime.now(), LocalDateTime.now());
     }
 
     @AfterAll
@@ -73,30 +75,21 @@ class OrderRestControllerTest {
 
     @Test
     @DisplayName("주문 요청 API")
+    @Order(1)
     void createOrder() throws Exception {
-        var productId = UUID.randomUUID();
-        var productName = "과테말라";
-        var category = Category.COFFEE_BEAN_PACKAGE;
-        var price = 15000L;
-        var description = "프리미엄 원두입니다.";
+        productRepository.insert(newProduct);
 
-        var product = new Product(productId, productName, category, price, description,
-            LocalDateTime.now(), LocalDateTime.now());
-        productRepository.insert(product);
-
-        List<OrderItemDto> orderItems = new ArrayList<>();
         var orderItemDto = new OrderItemDto();
-        orderItemDto.setProductId(product.getProductId());
-        orderItemDto.setCategory(product.getCategory());
-        orderItemDto.setPrice(product.getPrice());
+        orderItemDto.setProductId(newProduct.getProductId());
+        orderItemDto.setCategory(newProduct.getCategory());
+        orderItemDto.setPrice(newProduct.getPrice());
         orderItemDto.setQuantity(3);
-        orderItems.add(orderItemDto);
 
         OrderDto orderDto = new OrderDto();
         orderDto.setEmail("tester@email.com");
         orderDto.setAddress("경기도 구리시");
         orderDto.setPostcode("12345");
-        orderDto.setOrderItems(orderItems);
+        orderDto.setOrderItems(List.of(orderItemDto));
 
         mockMvc.perform(post("/api/v1/orders")
             .contentType(MediaType.APPLICATION_JSON_VALUE)

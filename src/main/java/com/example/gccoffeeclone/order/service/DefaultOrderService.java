@@ -2,6 +2,7 @@ package com.example.gccoffeeclone.order.service;
 
 
 import com.example.gccoffeeclone.order.controller.OrderDto;
+import com.example.gccoffeeclone.order.model.OrderStatus;
 import com.example.gccoffeeclone.order.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,14 @@ public class DefaultOrderService implements OrderService {
     @Override
     @Transactional
     public void createOrder(OrderDto orderDto) {
-        var order = orderDto.toEntity();
-        orderRepository.insert(order);
+        var newOrder = orderDto.toEntity();
+        var existOrder = orderRepository
+            .findAcceptedOrderByEmail(orderDto.getEmail(), OrderStatus.ACCEPTED);
+        if (existOrder.isPresent()) {
+            orderRepository.updateOrderAndOrderItems(existOrder.get().mergeOrder(newOrder));
+        } else {
+            orderRepository.insert(newOrder);
+        }
     }
 
 }

@@ -1,8 +1,8 @@
 package com.example.gccoffeeclone.order.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Order {
 
@@ -37,6 +37,36 @@ public class Order {
         this.orderStatus = orderStatus;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Order mergeOrder(Order otherOrder) {
+        address = otherOrder.getAddress();
+        postcode = otherOrder.getPostcode();
+
+        // create new order items
+        var otherOrderItems = otherOrder.getOrderItems().stream()
+            .collect(Collectors.toMap(OrderItem::productId, orderItem -> orderItem));
+
+        List<OrderItem> newOrderItems = new ArrayList<>(
+            orderItems.size() + otherOrder.getOrderItems().size());
+        orderItems.forEach(orderItem -> {
+            if (otherOrderItems.containsKey(orderItem.productId())) {
+                var duplicatedOrderItem = otherOrderItems.get(orderItem.productId());
+                newOrderItems.add(new OrderItem(
+                    orderItem.productId(),
+                    orderItem.category(),
+                    orderItem.price(),
+                    orderItem.quantity() + duplicatedOrderItem.quantity()));
+                otherOrderItems.remove(orderItem.productId());
+            } else {
+                newOrderItems.add(orderItem);
+            }
+        });
+        newOrderItems.addAll(otherOrderItems.values());
+        orderItems = newOrderItems;
+
+        setUpdatedAt();
+        return this;
     }
 
     public UUID getOrderId() {
@@ -86,6 +116,10 @@ public class Order {
         setUpdatedAt();
     }
 
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
     private void setUpdatedAt() {
         this.updatedAt = LocalDateTime.now();
     }
@@ -104,3 +138,4 @@ public class Order {
             '}';
     }
 }
+

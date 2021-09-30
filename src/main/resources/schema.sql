@@ -17,7 +17,8 @@ CREATE TABLE orders
     postcode     VARCHAR(200) NOT NULL,
     order_status VARCHAR(50)  NOT NULL,
     created_at   datetime(6) NOT NULL,
-    updated_at   datetime(6) DEFAULT NULL
+    updated_at   datetime(6) DEFAULT NULL,
+    INDEX (email)
 );
 
 CREATE TABLE order_items
